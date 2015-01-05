@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+
+  root 'main#index'
+
+  get 'main/new_user' => 'main#new_user', as: :new_user_info
+  post 'main/create_user' => 'main#create_user', as: :create_user
+
   resources :users
 
   # The priority is based upon order of creation: first created -> highest priority.
