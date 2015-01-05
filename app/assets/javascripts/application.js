@@ -14,3 +14,12 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+$(document).ready(function() {
+
+  $('.user-submit').on('click', function() {
+    var userData = $('#new-user').serializeArray();
+    console.log(userData[1].value);
+  });
+
+
+});
