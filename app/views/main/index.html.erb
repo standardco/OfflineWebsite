@@ -1,1 +1,71 @@
-<%= link_to "New user", new_user_info_path %>
+<div class="col-md-3">
+  <div class="panel panel-default main-container">
+    <div class="panel-heading">
+      <h4 class="title">New User</h4>
+    </div>
+    <div class="panel-body">
+      <form action="" id="new-user" class="form-stacked" remote="true">
+        <div class="form-group">
+          <label>Name</label><br>
+          <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="form-group">
+          <label>Age</label><br>
+          <input type="number" class="form-control" id="age" name="age">
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label><br>
+          <input type="date" class="form-control" id="date_of_birth" name="date_of_birth">
+        </div>
+        <div class="form-group">
+          <label>Height</label><br>
+          <input type="number" class="form-control" id="height" name="height" placeholder="e.g. 5.9 for 5'9&#34;">
+        </div>
+        <div class="actions">
+          <submit class="user-submit btn btn-default">Submit</submit>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-default main-container-two">
+    <div class="panel-heading">
+      <h4 class="title">Remove User</h4>
+    </div>
+    <div class="panel-body">
+      <form action="" id="delete-user" class="form-stacked" remote="true">
+        <div class="form-group">
+          <label>User ID</label><br>
+          <input type="number" class="form-control" id="user-key" name="key">
+        </div>
+        <div class="actions">
+          <submit class="user-delete btn btn-default">Delete</submit>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-8">
+  <div class="panel panel-default users-container">
+    <table class="table table-hover t-style">
+      <thead>
+        <tr class="table-head">
+          <th class="col-md-2 t-head"><h4 class="title">ID</h4></th>
+          <th class="col-md-2 t-head"><h4 class="title">Name</h4></th>
+          <th class="col-md-2 t-head"><h4 class="title">Age</h4></th>
+          <th class="col-md-2 t-head"><h4 class="title">Date of Birth</h4></th>
+          <th class="col-md-2 t-head"><h4 class="title">Height</h4></th>
+        </tr>
+      </thead>
+      <tbody id="user-list"></tbody>
+      <tfoot>
+        <td><button class="user-clear btn btn-default">Clear All Users</button></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tfoot>
+    </table>
+  </div>
+</div>
+

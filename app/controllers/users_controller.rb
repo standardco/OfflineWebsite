@@ -1,6 +1,13 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
+  def get_user_list
+    users = User.all
+    respond_to do |format|
+      format.js { render :json => { :users => users } } 
+    end
+  end
+
   # GET /users
   # GET /users.json
   def index
@@ -23,18 +30,13 @@ class UsersController < ApplicationController
 
   # POST /users
   # POST /users.json
-  def create
-    @user = User.new(user_params)
-
-    respond_to do |format|
-      if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render :show, status: :created, location: @user }
-      else
-        format.html { render :new }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
-    end
+  def self.create(params)
+    @user = User.new
+    @user.name = params[:NAME]
+    @user.age = params[:AGE]
+    @user.date_of_birth = params[:DATE_OF_BIRTH]
+    @user.height = params[:HEIGHT]
+    @user.save
   end
 
   # PATCH/PUT /users/1
