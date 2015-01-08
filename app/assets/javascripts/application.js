@@ -26,7 +26,7 @@ $(document).on('ready', function() {
         height    = userData[3].value;
     console.log(userData);
     if (internet == true) {
-      // normalSubmit(name, age, dob, height);
+      normalSubmit(name, age, dob, height);
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
       // addUser(name, age, dob, height);
@@ -222,9 +222,13 @@ function normalSubmit(name, age, dob, height) {
   $.ajax({
       type: 'POST',
       data: datastring,
-      url: 'main/create_user',
+      dataType: 'json',
+      url: '/users',
         success: function(data) {
-
+          console.log(data);
+          var date = data.new_user.date_of_birth
+          var formatted_date = date.substring(0,10);
+          $('#user-list').append('<tr id="'+data.new_user.id+'"><td>'+data.new_user.id+'</td><td>'+data.new_user.name+'</td><td>'+data.new_user.age+'</td><td>'+formatted_date+'</td><td>'+data.new_user.height+'</td></tr>');
         }
     });
 };
