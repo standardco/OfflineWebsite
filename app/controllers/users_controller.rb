@@ -59,9 +59,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    puts '!-------@@-------!'
     user = User.find(params[:id])
-    puts '!-------@@-------!'
     user.destroy
     respond_to do |format|
       format.js { render :json => { :deleted_user => user } }
