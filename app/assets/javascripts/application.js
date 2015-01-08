@@ -14,7 +14,6 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
-// (function () {
 $(document).on('ready', function() {
 
   $('.user-submit').on('click', function() {
@@ -31,19 +30,24 @@ $(document).on('ready', function() {
       // switch internet on and off repeatedly
       // addUser(name, age, dob, height);
     } else {
-      // addUser(name, age, dob, height);
+      addUser(name, age, dob, height);
     }
     document.getElementById('new-user').reset();
   });
 
   $('.user-clear').on('click', function() {
-    clearObjectStore();
+    var internet  = navigator.onLine;
+    if (internet == true) {
+      // Change this to a notice
+      alert("'Clear All Users' is only for offline mode.")
+    } else {
+      clearObjectStore();  
+    }
   });
 
   $('.user-delete').on('click', function() {
     var key       = $('#user-key').val(),
         internet  = navigator.onLine;
-
     if (internet == true) {
       console.log('internet')
       deleteDbUser(key);
@@ -52,8 +56,6 @@ $(document).on('ready', function() {
       key = Number(key);
       deleteUser(key);
     }
-
-    
     document.getElementById('delete-user').reset();
   });
 
@@ -116,7 +118,7 @@ $(document).on('ready', function() {
       databaseUsers();
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
-      webStoredUsers();
+      // webStoredUsers();
     } else {
       webStoredUsers();
     }
@@ -213,10 +215,8 @@ $(document).on('ready', function() {
   }
   
   openDb();
-  // addEventListeners();
 
 });
-// })(); // Immediately-Invoked Function Expression (IIFE)
 
 function normalSubmit(name, age, dob, height) {
   var datastring = {NAME: name, AGE: age, DATE_OF_BIRTH: dob, HEIGHT: height}
@@ -242,10 +242,7 @@ function deleteDbUser(id) {
       dataType: 'json',
       url: '/users/'+id,
         success: function(data) {
-          // console.log(data);
-          // var date = data.new_user.date_of_birth
-          // var formatted_date = date.substring(0,10);
-          // $('#user-list').append('<tr id="'+data.new_user.id+'"><td>'+data.new_user.id+'</td><td>'+data.new_user.name+'</td><td>'+data.new_user.age+'</td><td>'+formatted_date+'</td><td>'+data.new_user.height+'</td></tr>');
+          $('#'+data.deleted_user.id).hide();
         }
     });
 }
