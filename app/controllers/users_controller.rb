@@ -30,13 +30,16 @@ class UsersController < ApplicationController
 
   # POST /users
   # POST /users.json
-  def self.create(params)
-    @user = User.new
-    @user.name = params[:NAME]
-    @user.age = params[:AGE]
-    @user.date_of_birth = params[:DATE_OF_BIRTH]
-    @user.height = params[:HEIGHT]
-    @user.save
+  def create
+    user = User.new
+    user.name = params[:NAME]
+    user.age = params[:AGE]
+    user.date_of_birth = params[:DATE_OF_BIRTH]
+    user.height = params[:HEIGHT]
+    user.save
+    respond_to do |format|
+      format.js { render :json => { :new_user => user } } 
+    end
   end
 
   # PATCH/PUT /users/1
