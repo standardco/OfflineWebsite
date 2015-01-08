@@ -46,6 +46,7 @@ $(document).on('ready', function() {
 
     if (internet == true) {
       console.log('internet')
+      deleteDbUser(key);
     } else {
       console.log('no internet')
       key = Number(key);
@@ -232,6 +233,22 @@ function normalSubmit(name, age, dob, height) {
         }
     });
 };
+
+function deleteDbUser(id) {
+  var datastring = { ID: id }
+  $.ajax({
+      type: 'DELETE',
+      data: datastring,
+      dataType: 'json',
+      url: '/users/'+id,
+        success: function(data) {
+          // console.log(data);
+          // var date = data.new_user.date_of_birth
+          // var formatted_date = date.substring(0,10);
+          // $('#user-list').append('<tr id="'+data.new_user.id+'"><td>'+data.new_user.id+'</td><td>'+data.new_user.name+'</td><td>'+data.new_user.age+'</td><td>'+formatted_date+'</td><td>'+data.new_user.height+'</td></tr>');
+        }
+    });
+}
 
 function formatDate(d) {
   console.log(d);
