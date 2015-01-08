@@ -31,27 +31,12 @@
 
 .container {
   /*background: #ccc;*/
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .field {
   margin: 10px;
   border-radius: 4px;
-}
-
-.main-container {
-  margin-left: 50px;
-  margin-top: 50px;
-}
-
-.main-container-two {
-  margin-left: 50px;
-  margin-top: 20px;
-}
-
-.users-container {
-  margin-left: 10px;
-  margin-top: 50px;
 }
 
 .title {
