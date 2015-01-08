@@ -5,7 +5,6 @@ Rails.application.routes.draw do
   # match '/application.manifest' => Rails::Offline, via: [:get, :post]
 
   get 'main/new_user' => 'main#new_user', as: :new_user_info
-  post 'main/create_user' => 'main#create_user', as: :user_creation
 
   get 'users/get_user_list' => 'users#get_user_list', as: :get_user_list
 
