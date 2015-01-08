@@ -24,13 +24,14 @@ $(document).on('ready', function() {
         age       = userData[1].value,
         dob       = userData[2].value,
         height    = userData[3].value;
+    console.log(userData);
     if (internet == true) {
-      normalSubmit(name, age, dob, height);
+      // normalSubmit(name, age, dob, height);
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
-      addUser(name, age, dob, height);
+      // addUser(name, age, dob, height);
     } else {
-      addUser(name, age, dob, height);
+      // addUser(name, age, dob, height);
     }
     document.getElementById('new-user').reset();
   });
