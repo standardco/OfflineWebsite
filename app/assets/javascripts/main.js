@@ -109,7 +109,7 @@ $(document).on('ready', function() {
     var internet  = navigator.onLine;
 
     if (internet == true) {
-      // databaseUsers();
+      databaseUsers();
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
       webStoredUsers();
@@ -213,6 +213,7 @@ $(document).on('ready', function() {
             dob     = cursor.value.date_of_birth,
             height  = cursor.value.height;
         normalSubmit(name, age, dob, height);
+        deleteUser(cursor.key);
         cursor.continue();
       } else {
         console.log("Thats it")
