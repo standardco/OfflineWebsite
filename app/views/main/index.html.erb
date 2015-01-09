@@ -1,5 +1,6 @@
 <div class="container">
-  <div></div>
+  <div class="notice-box">
+  </div>
   <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -37,7 +38,7 @@
         <form action="" id="delete-user" class="form-stacked" remote="true">
           <div class="form-group">
             <label>User ID</label><br>
-            <input type="number" class="form-control" id="user-key" name="key">
+            <input type="number" class="form-control required" id="user-key" name="key">
           </div>
           <div class="actions">
             <submit class="user-delete btn btn-default">Delete</submit>
@@ -61,8 +62,8 @@
         </thead>
         <tbody id="user-list"></tbody>
         <tfoot>
+          <td><button class="sync-database btn btn-default">Sync</button></td>
           <td><button class="user-clear btn btn-default">Clear All Users</button></td>
-          <td></td>
           <td></td>
           <td></td>
           <td></td>
