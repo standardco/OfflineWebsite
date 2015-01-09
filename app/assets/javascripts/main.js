@@ -9,26 +9,25 @@ $(document).on('ready', function() {
         height    = userData[3].value;
     console.log(userData);
     if (internet == true) {
-      normalSubmit(name, age, dob, height);
+      // normalSubmit(name, age, dob, height);
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
-      // addUser(name, age, dob, height);
+      addUser(name, age, dob, height);
     } else {
       addUser(name, age, dob, height);
     }
     document.getElementById('new-user').reset();
   });
 
-  $('.user-clear').on('click', function() {
-    var internet  = navigator.onLine,
-        message   = '&#39;Clear All Users&#39; is only for offline mode.';
-    if (internet == true) {
-      // Change this to a notice
-      flashNotice(message);
-    } else {
-      clearObjectStore();  
-    }
-  });
+  // $('.user-clear').on('click', function() {
+  //   var internet  = navigator.onLine,
+  //       message   = '&#39;Clear All Users&#39; is only for offline mode.';
+  //   if (internet == true) {
+  //     flashNotice(message);
+  //   } else {
+  //     clearObjectStore();  
+  //   }
+  // });
 
   $('.user-delete').on('click', function() {
     var key       = $('#user-key').val(),
@@ -47,7 +46,7 @@ $(document).on('ready', function() {
   $('.sync-database').on('click', function () {
     console.log('Sync');
     var internet  = navigator.onLine,
-        message   = 'Cannot sync databases without internet connection. Please connect to the internet and try again!';
+        message   = 'Cannot sync databases without an internet connection. Please connect to the internet and try again!';
     if (internet == true) {
       syncDatabase();
     } else {
@@ -134,8 +133,13 @@ $(document).on('ready', function() {
       var cursor = event.target.result;
 
       if (cursor) {
-        console.log('displayUsers cursor:', cursor);
-        $('#user-list').append('<tr id="'+cursor.key+'"><td>'+cursor.key+'</td><td>'+cursor.value.name+'</td><td>'+cursor.value.age+'</td><td>'+cursor.value.date_of_birth+'</td><td>'+cursor.value.height+'</td></tr>');
+        // console.log('displayUsers cursor:', cursor);
+        var key     = cursor.key,
+            name    = cursor.value.name,
+            age     = cursor.value.age,
+            dob     = cursor.value.date_of_birth,
+            height  = cursor.value.height;
+        appendTable(key, name, age, dob, height);
         cursor.continue();
       } else {
         console.log("Thats it")
@@ -152,7 +156,12 @@ $(document).on('ready', function() {
     request.onsuccess = function(event) {
       // console.log('Insertion in DB successful');
       var message = 'User has been successfully added to web storage!';
-      $('#user-list').append('<tr id="'+event.target.result+'"><td>'+event.target.result+'</td><td>'+obj.name+'</td><td>'+obj.age+'</td><td>'+obj.date_of_birth+'</td><td>'+obj.height+'</td></tr>');
+          key     = event.target.result,
+          name    = obj.name,
+          age     = obj.age,
+          dob     = obj.date_of_birth,
+          height  = obj.height;
+      appendTable(key, name, age, dob, height);
       flashNotice(message);
     };
 
@@ -238,26 +247,32 @@ function normalSubmit(name, age, dob, height) {
       dataType: 'json',
       url: '/users',
         success: function(data) {
-          console.log(data);
-          var date = data.new_user.date_of_birth
-          var formatted_date = date.substring(0,10);
-          $('#user-list').append('<tr id="'+data.new_user.id+'"><td>'+data.new_user.id+'</td><td>'+data.new_user.name+'</td><td>'+data.new_user.age+'</td><td>'+formatted_date+'</td><td>'+data.new_user.height+'</td></tr>');
+          var date            = data.new_user.date_of_birth,
+              formattedDate   = date.substring(0,10),
+              id              = data.new_user.id,
+              name            = data.new_user.name,
+              age             = data.new_user.age,
+              height          = data.new_user.height;
+          appendTable(id, name, age, formattedDate, height);
           flashNotice(message);
         }
     });
 };
 
 function databaseUsers() {
-  console.log('Get users from database');
   $.ajax({
     type: 'GET',
     dataType: 'json',
     url: '/users/get_user_list',
       success: function(data) {
         $.each(data.users, function () {
-          var date = this.date_of_birth
-          var formatted_date = date.substring(0,10);
-          $('#user-list').append('<tr id="'+this.id+'"><td>'+this.id+'</td><td>'+this.name+'</td><td>'+this.age+'</td><td>'+formatted_date+'</td><td>'+this.height+'</td></tr>');
+          var date            = this.date_of_birth,
+              id              = this.id,
+              name            = this.name,
+              age             = this.age,
+              height          = this.height,
+              formattedDate   = date.substring(0,10);
+          appendTable(id, name, age, formattedDate, height);
         });
       }
   });
@@ -278,26 +293,29 @@ function deleteDbUser(id) {
     });
 }
 
-function formatDate(d) {
-  console.log(d);
-  // date = new Date(d)
-  var dd = d.getDate(); 
-  var mm = d.getMonth();
-  var yyyy = d.getFullYear(); 
-  if(dd<10){dd='0'+dd} 
-  if(mm<10){mm='0'+mm};
-  return d = yyyy+'-'+mm+'-'+dd
+function flashNotice(message) {
+  var noticeCount  = $(".notice-box > div").length,
+      notice       = "";
+      notice      +=  '<div class="notice alert alert-warning alert-dismissable fade in" role="alert">',
+      notice      +=  ' <button type="button" class="close" data-dismiss="alert" aria-label="Close">',
+      notice      +=  '   <span aria-hidden="true">&times;</span>',
+      notice      +=  ' </button>',
+      notice      +=  ' <p class="pull-right">'+noticeCount+'</p>',
+      notice      +=  '</div>';
+  $('.notice-box').append(notice);
+  // Find a wasy to count notices, then display the number in a badge
 };
 
-function flashNotice(message) {
-  var notice   = "";
-      notice  +=  '<div class="notice alert alert-warning alert-dismissable fade in" role="alert">',
-      notice  +=  ' <button type="button" class="close" data-dismiss="alert" aria-label="Close">',
-      notice  +=  '   <span aria-hidden="true">&times;</span>',
-      notice  +=  ' </button>',
-      notice  +=  ' <p><strong>Notice: </strong>'+message+'</p>',
-      notice  +=  '</div>';
-  $('.notice-box').append(notice);
+function appendTable(id, name, age, dob, height) {
+  var user  = "";
+      user += '<tr id="'+id+'">',
+      user += '  <td>'+id+'</td>',
+      user += '  <td>'+name+'</td>',
+      user += '  <td>'+age+'</td>',
+      user += '  <td>'+dob+'</td>',
+      user += '  <td>'+height+'</td>',
+      user += '</tr>';
+  $('#user-list').append(user);
 };
 
 
