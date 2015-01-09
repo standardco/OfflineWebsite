@@ -9,10 +9,10 @@ $(document).on('ready', function() {
         height    = userData[3].value;
     console.log(userData);
     if (internet == true) {
-      normalSubmit(name, age, dob, height);
+      // normalSubmit(name, age, dob, height);
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
-      // addUser(name, age, dob, height);
+      addUser(name, age, dob, height);
     } else {
       addUser(name, age, dob, height);
     }
@@ -43,8 +43,14 @@ $(document).on('ready', function() {
     document.getElementById('delete-user').reset();
   });
 
-  $('.alert-btn').on('click', function() {
-    alert('dismiss');
+  $('.sync-database').on('click', function () {
+    console.log('Sync');
+    var internet  = navigator.onLine;
+    if (internet == true) {
+      syncDatabase();
+    } else {
+      $('.notice-box').append('<div class="notice alert alert-warning alert-dismissable fade in" role="alert"><p><strong>Notice:</strong> Cannot sync databases without internet connection. Please connect to the internet and try again!</p><button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button></div>')
+    }
   });
 
   // Start of database interaction
@@ -103,10 +109,10 @@ $(document).on('ready', function() {
     var internet  = navigator.onLine;
 
     if (internet == true) {
-      databaseUsers();
+      // databaseUsers();
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
-      // webStoredUsers();
+      webStoredUsers();
     } else {
       webStoredUsers();
     }
@@ -186,6 +192,32 @@ $(document).on('ready', function() {
     request.onerror = function (event) {
       console.error("deleteUser:", event.target.errorCode);
       };
+  }
+
+  function syncDatabase() {
+    console.log('get users for syncing');
+    var req;
+
+    if (typeof store == 'undefined') {
+      store = getObjectStore(DB_STORE_NAME, 'readonly');
+    }
+
+    var request = db.transaction('users').objectStore('users').openCursor()
+    request.onsuccess = function(event) {
+      var cursor = event.target.result;
+
+      if (cursor) {
+        console.log('displayUsers cursor:', cursor);
+        var name    = cursor.value.name,
+            age     = cursor.value.age,
+            dob     = cursor.value.date_of_birth,
+            height  = cursor.value.height;
+        normalSubmit(name, age, dob, height);
+        cursor.continue();
+      } else {
+        console.log("Thats it")
+      }
+    }
   }
   
   openDb();
