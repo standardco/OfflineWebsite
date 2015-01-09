@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   get 'users/get_user_list' => 'users#get_user_list', as: :get_user_list
 
-  resources :users
+  resources :users, except: [:index, :show, :new, :edit, :update]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
