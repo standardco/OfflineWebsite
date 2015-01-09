@@ -15,16 +15,9 @@
  */
 
  .notice {
-  border: 1px solid #ddd;
-  margin-bottom: 10px;
   width: 1110px;
-  margin-left: auto;
   margin-right: auto;
-  border-radius: 4px;
-  padding: 5px;
-  text-align: left;
-  padding-left: 15px;
-  padding-top: 15px;
+  margin-left: auto;
  }
 
  .table-head {
