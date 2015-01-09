@@ -9,10 +9,10 @@ $(document).on('ready', function() {
         height    = userData[3].value;
     console.log(userData);
     if (internet == true) {
-      // normalSubmit(name, age, dob, height);
+      normalSubmit(name, age, dob, height);
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
-      addUser(name, age, dob, height);
+      // addUser(name, age, dob, height);
     } else {
       addUser(name, age, dob, height);
     }
@@ -20,10 +20,11 @@ $(document).on('ready', function() {
   });
 
   $('.user-clear').on('click', function() {
-    var internet  = navigator.onLine;
+    var internet  = navigator.onLine,
+        message   = '&#39;Clear All Users&#39; is only for offline mode.';
     if (internet == true) {
       // Change this to a notice
-      alert("'Clear All Users' is only for offline mode.")
+      flashNotice(message);
     } else {
       clearObjectStore();  
     }
@@ -45,11 +46,12 @@ $(document).on('ready', function() {
 
   $('.sync-database').on('click', function () {
     console.log('Sync');
-    var internet  = navigator.onLine;
+    var internet  = navigator.onLine,
+        message   = 'Cannot sync databases without internet connection. Please connect to the internet and try again!';
     if (internet == true) {
       syncDatabase();
     } else {
-      $('.notice-box').append('<div class="notice alert alert-warning alert-dismissable fade in" role="alert"><p><strong>Notice:</strong> Cannot sync databases without internet connection. Please connect to the internet and try again!</p><button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button></div>')
+      flashNotice(message);
     }
   });
 
@@ -112,7 +114,7 @@ $(document).on('ready', function() {
       databaseUsers();
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
-      webStoredUsers();
+      // webStoredUsers();
     } else {
       webStoredUsers();
     }
@@ -149,8 +151,9 @@ $(document).on('ready', function() {
 
     request.onsuccess = function(event) {
       // console.log('Insertion in DB successful');
+      var message = 'User has been successfully added to web storage!';
       $('#user-list').append('<tr id="'+event.target.result+'"><td>'+event.target.result+'</td><td>'+obj.name+'</td><td>'+obj.age+'</td><td>'+obj.date_of_birth+'</td><td>'+obj.height+'</td></tr>');
-      $('.notice-box').append('<div class="notice alert alert-warning alert-dismissable fade in" role="alert"><p><strong>Notice:</strong> User has been successfully added to web storage!</p><button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button></div>')
+      flashNotice(message);
     };
 
     request.onerror = function(event) {
@@ -181,8 +184,9 @@ $(document).on('ready', function() {
     // be a Number for deletion.
       request = store.delete(key);
       request.onsuccess = function(event) {
+        var message = 'User has been successfully deleted from web storage!';
         $('#'+key).hide();
-        $('.notice-box').append('<div class="notice alert alert-warning alert-dismissable fade in" role="alert"><p><strong>Notice:</strong> User has been successfully deleted from web storage!</p><button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button></div>')
+        flashNotice(message);
       };
       request.onerror = function (event) {
         console.error("deleteUser:", event.target.errorCode);
@@ -226,7 +230,8 @@ $(document).on('ready', function() {
 });
 
 function normalSubmit(name, age, dob, height) {
-  var datastring = {NAME: name, AGE: age, DATE_OF_BIRTH: dob, HEIGHT: height}
+  var datastring  = {NAME: name, AGE: age, DATE_OF_BIRTH: dob, HEIGHT: height},
+      message     = 'User has been successfully added to the database!'
   $.ajax({
       type: 'POST',
       data: datastring,
@@ -237,7 +242,7 @@ function normalSubmit(name, age, dob, height) {
           var date = data.new_user.date_of_birth
           var formatted_date = date.substring(0,10);
           $('#user-list').append('<tr id="'+data.new_user.id+'"><td>'+data.new_user.id+'</td><td>'+data.new_user.name+'</td><td>'+data.new_user.age+'</td><td>'+formatted_date+'</td><td>'+data.new_user.height+'</td></tr>');
-          $('.notice-box').append('<div class="notice alert alert-warning alert-dismissable fade in" role="alert"><p><strong>Notice:</strong> User has been successfully added to the database!</p><button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button></div>')
+          flashNotice(message);
         }
     });
 };
@@ -259,7 +264,8 @@ function databaseUsers() {
 };
 
 function deleteDbUser(id) {
-  var datastring = { ID: id }
+  var datastring  = { ID: id },
+      message     = 'User has been successfully deleted from the database!';
   $.ajax({
       type: 'DELETE',
       data: datastring,
@@ -267,7 +273,7 @@ function deleteDbUser(id) {
       url: '/users/'+id,
         success: function(data) {
           $('#'+data.deleted_user.id).hide();
-          $('.notice-box').append('<div class="notice alert alert-warning alert-dismissable fade in" role="alert"><p><strong>Notice:</strong> User has been successfully deleted from the database!</p><button class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button></div>')
+          flashNotice(message);
         }
     });
 }
@@ -281,6 +287,17 @@ function formatDate(d) {
   if(dd<10){dd='0'+dd} 
   if(mm<10){mm='0'+mm};
   return d = yyyy+'-'+mm+'-'+dd
+};
+
+function flashNotice(message) {
+  var notice   = "";
+      notice  +=  '<div class="notice alert alert-warning alert-dismissable fade in" role="alert">',
+      notice  +=  ' <button type="button" class="close" data-dismiss="alert" aria-label="Close">',
+      notice  +=  '   <span aria-hidden="true">&times;</span>',
+      notice  +=  ' </button>',
+      notice  +=  ' <p><strong>Notice: </strong>'+message+'</p>',
+      notice  +=  '</div>';
+  $('.notice-box').append(notice);
 };
 
 
