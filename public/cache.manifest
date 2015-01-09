@@ -9,6 +9,7 @@ assets/jquery_ujs.js?body=1
 assets/turbolinks.js?body=1
 assets/bootstrap.min.css?body=1
 assets/bootstrap.min.js?body=1
+assets/main.js?body=1
 
 NETWORK:
 *
