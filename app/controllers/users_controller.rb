@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:destroy]
 
   def get_user_list
     users = User.all
@@ -8,8 +8,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # POST /users
-  # POST /users.json
   def create
     user = User.new
     user.name = params[:NAME]
@@ -22,8 +20,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # DELETE /users/1
-  # DELETE /users/1.json
   def destroy
     user = User.find(params[:id])
     user.destroy
