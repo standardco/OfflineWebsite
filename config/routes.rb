@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :posts
+
   root 'main#index', as: :home
 
   get 'users/get_user_list' => 'users#get_user_list', as: :get_user_list
