@@ -2,14 +2,8 @@ CACHE MANIFEST
 # Version 1420483758
 
 CACHE:
-assets/application.js?body=1
-assets/application.css?body=1
-assets/jquery.js?body=1
-assets/jquery_ujs.js?body=1
-assets/turbolinks.js?body=1
-assets/bootstrap.min.css?body=1
-assets/bootstrap.min.js?body=1
-assets/main.js?body=1
+/assets/application-1a9f010e00bf077cef4f85948ab73822.css
+/assets/application-3e89ca411dc90386ad6bd46448021348
 
 NETWORK:
 *
