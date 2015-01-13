@@ -68,7 +68,7 @@ $(document).on('ready', function() {
       // garbage collection.
       // db = req.result;
       db = this.result;
-      displayUsers();
+      displayPosts();
       console.log('openDb is done')
     };
 
@@ -252,20 +252,19 @@ function normalSubmit(author, location, topic, message) {
     });
 };
 
-function databaseUsers() {
+function databasePosts() {
   $.ajax({
     type: 'GET',
     dataType: 'json',
-    url: '/users/get_user_list',
+    url: '/posts/get_list_of_posts',
       success: function(data) {
-        $.each(data.users, function () {
-          var date            = this.date_of_birth,
-              id              = this.id,
-              name            = this.name,
-              age             = this.age,
-              height          = this.height,
-              formattedDate   = date.substring(0,10);
-          appendTable(id, name, age, formattedDate, height);
+        $.each(data.posts, function () {
+          var id        = this.id,
+              author    = this.author,
+              location  = this.location,
+              message   = this.message,
+              topic     = this.topic
+          appendTable(id, author, location, topic, message);
         });
       }
   });
@@ -298,14 +297,14 @@ function flashNotice(noticeMessage) {
   // Find a wasy to count notices, then display the number in a badge
 };
 
-function appendTable(id, name, age, dob, height) {
+function appendTable(id, author, location, topic, message) {
   var user  = "";
       user += '<tr id="'+id+'">',
       user += '  <td>'+id+'</td>',
-      user += '  <td>'+name+'</td>',
-      user += '  <td>'+age+'</td>',
-      user += '  <td>'+dob+'</td>',
-      user += '  <td>'+height+'</td>',
+      user += '  <td>'+author+'</td>',
+      user += '  <td>'+location+'</td>',
+      user += '  <td>'+topic+'</td>',
+      user += '  <td>'+message+'</td>',
       user += '</tr>';
   $('#user-list').append(user);
 };
