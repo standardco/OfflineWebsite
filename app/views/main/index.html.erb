@@ -4,35 +4,32 @@
   <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h4 class="title">New User</h4>
+        <h4 class="title">New Post</h4>
       </div>
       <div class="panel-body">
-        <form action="" id="new-user" class="form-stacked" remote="true">
-          <div class="form-group">
-            <label>Name</label><br>
-            <input type="text" class="form-control" id="name" name="name">
+        <form action="" id="new-post" class="form-stacked" remote="true">
+          <div class="form-group input-group">
+            <span class="input-group-addon" id="basic-addon1">@</span>
+            <input type="text" class="form-control" id="author" name="author" aria-describedby="basic-addon1" placeholder="Author">
           </div>
           <div class="form-group">
-            <label>Age</label><br>
-            <input type="number" class="form-control" id="age" name="age">
+            <input type="text" class="form-control" id="location" name="location" placeholder="Location">
           </div>
           <div class="form-group">
-            <label>Date of Birth</label><br>
-            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth">
+            <input type="text" class="form-control" id="topic" name="topic" placeholder="Topic">
           </div>
           <div class="form-group">
-            <label>Height</label><br>
-            <input type="number" class="form-control" id="height" name="height" placeholder="e.g. 5.9 for 5'9&#34;">
+            <textarea class="form-control" id="message" name="message" placeholder="Message"></textarea>
           </div>
           <div class="actions">
-            <submit class="user-submit btn btn-info">Submit</submit>
+            <submit class="post-submit btn btn-info">Submit</submit>
           </div>
         </form>
       </div>
     </div>
-    <div class="panel panel-default">
+    <!-- <div class="panel panel-default">
       <div class="panel-heading">
-        <h4 class="title">Remove User</h4>
+        <h4 class="title">Remove Post</h4>
       </div>
       <div class="panel-body">
         <form action="" id="delete-user" class="form-stacked" remote="true">
@@ -45,7 +42,7 @@
           </div>
         </form>
       </div>
-    </div>
+    </div> -->
   </div>
   <div class="col-md-9">
     <div class="panel panel-default">
@@ -61,7 +58,7 @@
         </thead>
         <tbody id="user-list"></tbody>
         <tfoot>
-          <td><button class="sync-database btn btn-info">Sync Databases</button></td>
+          <td><!-- <button class="sync-database btn btn-info">Sync Databases</button> --></td>
           <td><!-- <button class="user-clear btn btn-info">Clear All Users</button> --></td>
           <td></td>
           <td></td>
