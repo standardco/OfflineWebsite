@@ -1,6 +1,14 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:destroy]
 
+  def get_list_of_posts
+    posts = Post.all
+    respond_to do |format|
+      format.js { render :json => { :posts => posts } } 
+    end
+
+  end
+
   # POST /posts
   # POST /posts.json
   def create
