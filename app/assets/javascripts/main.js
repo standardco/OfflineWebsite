@@ -1,22 +1,19 @@
 $(document).on('ready', function() {
 
-  $('.user-submit').on('click', function() {
+  $('.post-submit').on('click', function() {
     var internet  = navigator.onLine,
-        userData  = $('#new-user').serializeArray(),
-        name      = userData[0].value,
-        age       = userData[1].value,
-        dob       = userData[2].value,
-        height    = userData[3].value;
-    console.log(userData);
+        postData  = $('#new-post').serializeArray(),
+        author    = postData[0].value,
+        location  = postData[1].value,
+        topic     = postData[2].value,
+        message   = postData[3].value;
+    console.log(postData);
     if (internet == true) {
-      // normalSubmit(name, age, dob, height);
-      // Used during testing to avoid having to 
-      // switch internet on and off repeatedly
-      addUser(name, age, dob, height);
+      normalSubmit(author, location, topic, message);
     } else {
-      addUser(name, age, dob, height);
+      // addUser(name, age, dob, height);
     }
-    document.getElementById('new-user').reset();
+    document.getElementById('new-post').reset();
   });
 
   // $('.user-clear').on('click', function() {
@@ -29,36 +26,36 @@ $(document).on('ready', function() {
   //   }
   // });
 
-  $('.user-delete').on('click', function() {
-    var key       = $('#user-key').val(),
-        internet  = navigator.onLine;
-    if (internet == true) {
-      console.log('internet')
-      deleteDbUser(key);
-    } else {
-      console.log('no internet')
-      key = Number(key);
-      deleteUser(key);
-    }
-    document.getElementById('delete-user').reset();
-  });
+  // $('.user-delete').on('click', function() {
+  //   var key       = $('#user-key').val(),
+  //       internet  = navigator.onLine;
+  //   if (internet == true) {
+  //     console.log('internet')
+  //     deleteDbUser(key);
+  //   } else {
+  //     console.log('no internet')
+  //     key = Number(key);
+  //     deleteUser(key);
+  //   }
+  //   document.getElementById('delete-user').reset();
+  // });
 
-  $('.sync-database').on('click', function () {
-    console.log('Sync');
-    var internet  = navigator.onLine,
-        message   = 'Cannot sync databases without an internet connection. Please connect to the internet and try again!';
-    if (internet == true) {
-      syncDatabase();
-    } else {
-      flashNotice(message);
-    }
-  });
+  // $('.sync-database').on('click', function () {
+  //   console.log('Sync');
+  //   var internet  = navigator.onLine,
+  //       message   = 'Cannot sync databases without an internet connection. Please connect to the internet and try again!';
+  //   if (internet == true) {
+  //     syncDatabase();
+  //   } else {
+  //     flashNotice(message);
+  //   }
+  // });
 
   // Start of database interaction
 
   const DB_NAME = 'no-internet-prototype';
-  const DB_VERSION = 3;
-  const DB_STORE_NAME = 'users';
+  const DB_VERSION = 1;
+  const DB_STORE_NAME = 'posts';
 
   var db;
 
@@ -83,8 +80,6 @@ $(document).on('ready', function() {
       console.log('openDb.onupgradeneeded');
       var store = event.currentTarget.result.createObjectStore(
         DB_STORE_NAME, { keyPath: 'id', autoIncrement: true });
-
-      store.createIndex('age', 'age', { unique: false });
     };
   }
 
@@ -110,10 +105,10 @@ $(document).on('ready', function() {
     var internet  = navigator.onLine;
 
     if (internet == true) {
-      databaseUsers();
+      // databaseUsers();
       // Used during testing to avoid having to 
       // switch internet on and off repeatedly
-      // webStoredUsers();
+      webStoredUsers();
     } else {
       webStoredUsers();
     }
@@ -122,14 +117,15 @@ $(document).on('ready', function() {
   function webStoredUsers(store) {
     console.log('displayUsers');
     $('#user-list').empty();
-    var req;
 
     if (typeof store == 'undefined') {
       store = getObjectStore(DB_STORE_NAME, 'readonly');
     }
 
-    var request = db.transaction('users').objectStore('users').openCursor()
+    var request = store.openCursor()
+    console.log(request);
     request.onsuccess = function(event) {
+      console.log('test');
       var cursor = event.target.result;
 
       if (cursor) {
@@ -173,8 +169,9 @@ $(document).on('ready', function() {
   function deleteUser(key, store) {
     console.log("deleteUser:", arguments);
 
-    if (typeof store == 'undefined')
+    if (typeof store == 'undefined') {
       store = getObjectStore(DB_STORE_NAME, 'readwrite');
+    }
 
     // As per spec http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
     // the result of the Object Store Deletion Operation algorithm is
@@ -238,23 +235,22 @@ $(document).on('ready', function() {
 
 });
 
-function normalSubmit(name, age, dob, height) {
-  var datastring  = {NAME: name, AGE: age, DATE_OF_BIRTH: dob, HEIGHT: height},
-      message     = 'User has been successfully added to the database!'
+function normalSubmit(author, location, topic, message) {
+  var datastring  = {author: author, location: location, topic: topic, message: message},
+      notice     = 'Your post has been successfully added to the database!';
   $.ajax({
       type: 'POST',
       data: datastring,
       dataType: 'json',
-      url: '/users',
+      url: '/posts',
         success: function(data) {
-          var date            = data.new_user.date_of_birth,
-              formattedDate   = date.substring(0,10),
-              id              = data.new_user.id,
-              name            = data.new_user.name,
-              age             = data.new_user.age,
-              height          = data.new_user.height;
-          appendTable(id, name, age, formattedDate, height);
-          flashNotice(message);
+          var id        = data.new_post.id,
+              author    = data.new_post.author,
+              location  = data.new_post.location,
+              topic     = data.new_post.topic,
+              message   = data.new_post.message;
+          appendTable(id, author, location, topic, message);
+          flashNotice(notice);
         }
     });
 };
@@ -293,14 +289,13 @@ function deleteDbUser(id) {
     });
 }
 
-function flashNotice(message) {
-  var noticeCount  = $(".notice-box > div").length,
-      notice       = "";
+function flashNotice(noticeMessage) {
+  var notice       = "";
       notice      +=  '<div class="notice alert alert-warning alert-dismissable fade in" role="alert">',
       notice      +=  ' <button type="button" class="close" data-dismiss="alert" aria-label="Close">',
       notice      +=  '   <span aria-hidden="true">&times;</span>',
       notice      +=  ' </button>',
-      notice      +=  ' <p class="pull-right">'+noticeCount+'</p>',
+      notice      +=  ' <p><strong>Notice: </strong>'+noticeMessage+'</p>',
       notice      +=  '</div>';
   $('.notice-box').append(notice);
   // Find a wasy to count notices, then display the number in a badge
