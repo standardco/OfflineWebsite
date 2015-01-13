@@ -18,7 +18,6 @@ class PostsController < ApplicationController
     post.message = params[:message]
     post.topic = params[:topic]
     post.save
-
     respond_to do |format|
       format.js { render :json => { :new_post => post } } 
     end
@@ -27,14 +26,11 @@ class PostsController < ApplicationController
   # DELETE /posts/1
   # DELETE /posts/1.json
   def destroy
-    puts '!------@@------!'
     post = Post.find(params[:id])
     post.destroy
     respond_to do |format|
       format.js { render :json => { :deleted_post => post } }
     end
-
-    puts '!------@@------!'
   end
 
   private
