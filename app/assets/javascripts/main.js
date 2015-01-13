@@ -7,9 +7,9 @@ $(document).on('ready', function() {
         location  = postData[1].value,
         topic     = postData[2].value,
         message   = postData[3].value;
+
     if (internet == true) {
-      // normalSubmit(author, location, topic, message);
-      addPost(author, location, topic, message);
+      normalSubmit(author, location, topic, message);
     } else {
       addPost(author, location, topic, message);
     }
@@ -29,10 +29,9 @@ $(document).on('ready', function() {
   $('.post-delete').on('click', function() {
     var key       = $('#post-key').val(),
         internet  = navigator.onLine;
+
     if (internet == true) {
-      // deleteDbPost(key);
-      key = Number(key);
-      deletePost(key);
+      deleteDbPost(key);
     } else {
       key = Number(key);
       deletePost(key);
@@ -43,6 +42,7 @@ $(document).on('ready', function() {
   $('.sync-database').on('click', function () {
     var internet  = navigator.onLine,
         notice   = 'Cannot sync databases without an internet connection. Please connect to the internet and try again!';
+
     if (internet == true) {
       syncDatabase();
     } else {
@@ -101,9 +101,9 @@ $(document).on('ready', function() {
 
   function displayPosts() {
     var internet  = navigator.onLine;
+
     if (internet == true) {
-      // databasePosts();
-      webStoredPosts();
+      databasePosts();
     } else {
       webStoredPosts();
     }
@@ -111,22 +111,27 @@ $(document).on('ready', function() {
 
   function webStoredPosts(store) {
     $('#user-list').empty();
+
     if (typeof store == 'undefined') {
       store = getObjectStore(DB_STORE_NAME, 'readonly');
     }
+
     var request = store.openCursor()
+
     request.onsuccess = function(event) {
       var cursor = event.target.result;
+
       if (cursor) {
         var key       = cursor.key,
             author    = cursor.value.author,
             location  = cursor.value.location,
             topic     = cursor.value.topic,
             message   = cursor.value.message;
+
         appendTable(key, author, location, topic, message);
         cursor.continue();
       } else {
-        // console.log("done")
+        // No more data entries
       }
     }
   };
@@ -137,13 +142,13 @@ $(document).on('ready', function() {
         request = store.add(obj);
 
     request.onsuccess = function(event) {
-      // console.log('Insertion in DB successful');
       var notice    = 'Your post has been successfully added to web storage!';
           key       = event.target.result,
           author    = obj.author,
           location  = obj.location,
           topic     = obj.topic,
           message   = obj.message;
+
       appendTable(key, author, location, topic, message);
       flashNotice(notice);
     };
@@ -154,6 +159,7 @@ $(document).on('ready', function() {
   };
 
   function deletePost(key, store) {
+
     if (typeof store == 'undefined') {
       store = getObjectStore(DB_STORE_NAME, 'readwrite');
     }
@@ -163,19 +169,25 @@ $(document).on('ready', function() {
     // undefined, so it's not possible to know if some records were actually
     // deleted by looking at the request result.
     var request = store.get(key);
+
     request.onsuccess = function(event) {
       var record = event.target.result;
+
       if (typeof record == 'undefined') {
         var notice = 'A post with the given Post ID does not seem to exist! Please try a different one.';
+
         flashNotice(notice)
         return;
       }
-    // Warning: The exact same key used for creation needs to be passed for
-    // the deletion. If the key was a Number for creation, then it needs to
-    // be a Number for deletion.
+
+      // Warning: The exact same key used for creation needs to be passed for
+      // the deletion. If the key was a Number for creation, then it needs to
+      // be a Number for deletion.
       request = store.delete(key);
+
       request.onsuccess = function(event) {
         var notice = 'The post has been successfully deleted from web storage!';
+
         $('#'+key).hide();
         flashNotice(notice);
       };
@@ -197,20 +209,21 @@ $(document).on('ready', function() {
     }
 
     var request = db.transaction('posts').objectStore('posts').openCursor()
+
     request.onsuccess = function(event) {
       var cursor = event.target.result;
 
-      if (cursor) {
-        
+      if (cursor) {    
         var author    = cursor.value.author,
             location  = cursor.value.location,
             topic     = cursor.value.topic,
             message   = cursor.value.message;
+
         normalSubmit(author, location, topic, message);
         deletePost(cursor.key);
         cursor.continue();
       } else {
-        // console.log("Done")
+        // No more data entries
       }
     }
   }
@@ -222,6 +235,7 @@ $(document).on('ready', function() {
 function normalSubmit(author, location, topic, message) {
   var datastring  = {author: author, location: location, topic: topic, message: message},
       notice     = 'Your post has been successfully added to the database!';
+
   $.ajax({
       type: 'POST',
       data: datastring,
@@ -233,6 +247,7 @@ function normalSubmit(author, location, topic, message) {
               location  = data.new_post.location,
               topic     = data.new_post.topic,
               message   = data.new_post.message;
+
           appendTable(id, author, location, topic, message);
           flashNotice(notice);
         }
@@ -251,6 +266,7 @@ function databasePosts() {
               location  = this.location,
               message   = this.message,
               topic     = this.topic
+
           appendTable(id, author, location, topic, message);
         });
       }
@@ -260,6 +276,7 @@ function databasePosts() {
 function deleteDbPost(id) {
   var datastring  = { ID: id },
       notice     = 'The post has been successfully deleted from the database!';
+      
   $.ajax({
       type: 'DELETE',
       data: datastring,
