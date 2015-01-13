@@ -30,11 +30,12 @@ $(document).on('ready', function() {
     var key       = $('#post-key').val(),
         internet  = navigator.onLine;
     if (internet == true) {
-      deleteDbPost(key);
+      // deleteDbPost(key);
+      key = Number(key);
+      deletePost(key);
     } else {
-      // console.log('no internet')
-      // key = Number(key);
-      // deleteUser(key);
+      key = Number(key);
+      deletePost(key);
     }
     document.getElementById('delete-post').reset();
   });
@@ -153,43 +154,41 @@ $(document).on('ready', function() {
     };
   };
 
-  // function deleteUser(key, store) {
-  //   console.log("deleteUser:", arguments);
+  function deletePost(key, store) {
+    if (typeof store == 'undefined') {
+      store = getObjectStore(DB_STORE_NAME, 'readwrite');
+    }
 
-  //   if (typeof store == 'undefined') {
-  //     store = getObjectStore(DB_STORE_NAME, 'readwrite');
-  //   }
+    // As per spec http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
+    // the result of the Object Store Deletion Operation algorithm is
+    // undefined, so it's not possible to know if some records were actually
+    // deleted by looking at the request result.
+    var request = store.get(key);
+    request.onsuccess = function(event) {
+      var record = event.target.result;
+      if (typeof record == 'undefined') {
+        var notice = 'A post with the given Post ID does not seem to exist! Please try a different one.';
+        flashNotice(notice)
+        return;
+      }
+    // Warning: The exact same key used for creation needs to be passed for
+    // the deletion. If the key was a Number for creation, then it needs to
+    // be a Number for deletion.
+      request = store.delete(key);
+      request.onsuccess = function(event) {
+        var notice = 'The post has been successfully deleted from web storage!';
+        $('#'+key).hide();
+        flashNotice(notice);
+      };
+      request.onerror = function (event) {
+        console.error("deletePost:", event.target.errorCode);
+      };
+    };
 
-  //   // As per spec http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
-  //   // the result of the Object Store Deletion Operation algorithm is
-  //   // undefined, so it's not possible to know if some records were actually
-  //   // deleted by looking at the request result.
-  //   var request = store.get(key);
-  //   request.onsuccess = function(event) {
-  //     var record = event.target.result;
-  //     console.log("record:", record);
-  //     if (typeof record == 'undefined') {
-  //       console.log("No matching record found");
-  //       return;
-  //     }
-  //   // Warning: The exact same key used for creation needs to be passed for
-  //   // the deletion. If the key was a Number for creation, then it needs to
-  //   // be a Number for deletion.
-  //     request = store.delete(key);
-  //     request.onsuccess = function(event) {
-  //       var message = 'User has been successfully deleted from web storage!';
-  //       $('#'+key).hide();
-  //       flashNotice(message);
-  //     };
-  //     request.onerror = function (event) {
-  //       console.error("deleteUser:", event.target.errorCode);
-  //     };
-  //   };
-
-  //   request.onerror = function (event) {
-  //     console.error("deleteUser:", event.target.errorCode);
-  //     };
-  // }
+    request.onerror = function (event) {
+      console.error("deletePost:", event.target.errorCode);
+      };
+  }
 
   // function syncDatabase() {
   //   console.log('get users for syncing');
