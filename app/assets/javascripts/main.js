@@ -40,16 +40,15 @@ $(document).on('ready', function() {
     document.getElementById('delete-post').reset();
   });
 
-  // $('.sync-database').on('click', function () {
-  //   console.log('Sync');
-  //   var internet  = navigator.onLine,
-  //       message   = 'Cannot sync databases without an internet connection. Please connect to the internet and try again!';
-  //   if (internet == true) {
-  //     syncDatabase();
-  //   } else {
-  //     flashNotice(message);
-  //   }
-  // });
+  $('.sync-database').on('click', function () {
+    var internet  = navigator.onLine,
+        notice   = 'Cannot sync databases without an internet connection. Please connect to the internet and try again!';
+    if (internet == true) {
+      syncDatabase();
+    } else {
+      flashNotice(notice);
+    }
+  });
 
   // Start of database interaction
 
@@ -190,32 +189,31 @@ $(document).on('ready', function() {
       };
   }
 
-  // function syncDatabase() {
-  //   console.log('get users for syncing');
-  //   var req;
+  function syncDatabase() {
+    var req;
 
-  //   if (typeof store == 'undefined') {
-  //     store = getObjectStore(DB_STORE_NAME, 'readonly');
-  //   }
+    if (typeof store == 'undefined') {
+      store = getObjectStore(DB_STORE_NAME, 'readonly');
+    }
 
-  //   var request = db.transaction('users').objectStore('users').openCursor()
-  //   request.onsuccess = function(event) {
-  //     var cursor = event.target.result;
+    var request = db.transaction('posts').objectStore('posts').openCursor()
+    request.onsuccess = function(event) {
+      var cursor = event.target.result;
 
-  //     if (cursor) {
-  //       console.log('displayUsers cursor:', cursor);
-  //       var name    = cursor.value.name,
-  //           age     = cursor.value.age,
-  //           dob     = cursor.value.date_of_birth,
-  //           height  = cursor.value.height;
-  //       normalSubmit(name, age, dob, height);
-  //       deleteUser(cursor.key);
-  //       cursor.continue();
-  //     } else {
-  //       console.log("Thats it")
-  //     }
-  //   }
-  // }
+      if (cursor) {
+        
+        var author    = cursor.value.author,
+            location  = cursor.value.location,
+            topic     = cursor.value.topic,
+            message   = cursor.value.message;
+        normalSubmit(author, location, topic, message);
+        deletePost(cursor.key);
+        cursor.continue();
+      } else {
+        // console.log("Done")
+      }
+    }
+  }
   
   openDb();
 
