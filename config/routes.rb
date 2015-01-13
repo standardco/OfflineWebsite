@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   get 'posts/get_list_of_posts' => 'posts#get_list_of_posts', as: :get_list_of_posts
 
+  match '/application.manifest' => Rails::Offline, via: [:get, :post]
+
   resources :posts, except: [:index, :show, :new, :edit, :update]
 
   # The priority is based upon order of creation: first created -> highest priority.
