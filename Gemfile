@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'rack-offline'
+
 gem 'pg'
 
 gem 'puma'
