@@ -9,8 +9,6 @@ class PostsController < ApplicationController
 
   end
 
-  # POST /posts
-  # POST /posts.json
   def create
     post = Post.new
     post.author = params[:author]
@@ -23,8 +21,6 @@ class PostsController < ApplicationController
     end
   end
 
-  # DELETE /posts/1
-  # DELETE /posts/1.json
   def destroy
     post = Post.find(params[:id])
     post.destroy
