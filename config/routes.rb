@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   root 'main#index', as: :home
 
-  get 'users/get_user_list' => 'users#get_user_list', as: :get_user_list
+  get 'posts/get_list_of_posts' => 'posts#get_list_of_posts', as: :get_list_of_posts
 
   resources :posts, except: [:index, :show, :new, :edit, :update]
 
