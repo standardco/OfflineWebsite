@@ -7,7 +7,6 @@ $(document).on('ready', function() {
         location  = postData[1].value,
         topic     = postData[2].value,
         message   = postData[3].value;
-    console.log(postData);
     if (internet == true) {
       normalSubmit(author, location, topic, message);
     } else {
@@ -59,16 +58,16 @@ $(document).on('ready', function() {
   var db;
 
   function openDb() {
-    console.log('openDb...')
+    // console.log('openDb...')
     var request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onsuccess = function(event) {
       // Better use "this" than "req" to get the result to avoid problems with
       // garbage collection.
-      // db = req.result;
+      // db = request.result;
       db = this.result;
       displayPosts();
-      console.log('openDb is done')
+      // console.log('openDb is done')
     };
 
     request.onerror = function(event) {
@@ -76,7 +75,6 @@ $(document).on('ready', function() {
     };
 
     request.onupgradeneeded = function(event) {
-      console.log('openDb.onupgradeneeded');
       var store = event.currentTarget.result.createObjectStore(
         DB_STORE_NAME, { keyPath: 'id', autoIncrement: true });
     };
@@ -102,42 +100,35 @@ $(document).on('ready', function() {
 
   function displayPosts() {
     var internet  = navigator.onLine;
-
     if (internet == true) {
-      databasePosts();
+      // databasePosts();
+      webStoredPosts();
     } else {
-      // webStoredUsers();
+      webStoredPosts();
     }
   };
 
-  // function webStoredUsers(store) {
-  //   console.log('displayUsers');
-  //   $('#user-list').empty();
-
-  //   if (typeof store == 'undefined') {
-  //     store = getObjectStore(DB_STORE_NAME, 'readonly');
-  //   }
-
-  //   var request = store.openCursor()
-  //   console.log(request);
-  //   request.onsuccess = function(event) {
-  //     console.log('test');
-  //     var cursor = event.target.result;
-
-  //     if (cursor) {
-  //       // console.log('displayUsers cursor:', cursor);
-  //       var key     = cursor.key,
-  //           name    = cursor.value.name,
-  //           age     = cursor.value.age,
-  //           dob     = cursor.value.date_of_birth,
-  //           height  = cursor.value.height;
-  //       appendTable(key, name, age, dob, height);
-  //       cursor.continue();
-  //     } else {
-  //       console.log("Thats it")
-  //     }
-  //   }
-  // };
+  function webStoredPosts(store) {
+    $('#user-list').empty();
+    if (typeof store == 'undefined') {
+      store = getObjectStore(DB_STORE_NAME, 'readonly');
+    }
+    var request = store.openCursor()
+    request.onsuccess = function(event) {
+      var cursor = event.target.result;
+      if (cursor) {
+        var key       = cursor.key,
+            author    = cursor.value.author,
+            location  = cursor.value.location,
+            topic     = cursor.value.topic,
+            message   = cursor.value.message;
+        appendTable(key, author, location, topic, message);
+        cursor.continue();
+      } else {
+        // console.log("done")
+      }
+    }
+  };
 
   // function addUser(name, age, dob, height) {
   //   // console.log('addUser')
