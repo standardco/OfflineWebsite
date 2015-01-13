@@ -8,9 +8,10 @@ $(document).on('ready', function() {
         topic     = postData[2].value,
         message   = postData[3].value;
     if (internet == true) {
-      normalSubmit(author, location, topic, message);
+      // normalSubmit(author, location, topic, message);
+      addPost(author, location, topic, message);
     } else {
-      // addUser(name, age, dob, height);
+      addPost(author, location, topic, message);
     }
     document.getElementById('new-post').reset();
   });
@@ -130,28 +131,27 @@ $(document).on('ready', function() {
     }
   };
 
-  // function addUser(name, age, dob, height) {
-  //   // console.log('addUser')
-  //   var obj     = { name: name, age: age, date_of_birth: dob, height: height},
-  //       store   = getObjectStore(DB_STORE_NAME, 'readwrite'),
-  //       request = store.add(obj);
+  function addPost(author, location, topic, message) {
+    var obj     = { author: author, location: location, topic: topic, message: message},
+        store   = getObjectStore(DB_STORE_NAME, 'readwrite'),
+        request = store.add(obj);
 
-  //   request.onsuccess = function(event) {
-  //     // console.log('Insertion in DB successful');
-  //     var message = 'User has been successfully added to web storage!';
-  //         key     = event.target.result,
-  //         name    = obj.name,
-  //         age     = obj.age,
-  //         dob     = obj.date_of_birth,
-  //         height  = obj.height;
-  //     appendTable(key, name, age, dob, height);
-  //     flashNotice(message);
-  //   };
+    request.onsuccess = function(event) {
+      // console.log('Insertion in DB successful');
+      var notice    = 'Your post has been successfully added to web storage!';
+          key       = event.target.result,
+          author    = obj.author,
+          location  = obj.location,
+          topic     = obj.topic,
+          message   = obj.message;
+      appendTable(key, author, location, topic, message);
+      flashNotice(notice);
+    };
 
-  //   request.onerror = function(event) {
-  //     console.error('error');
-  //   };
-  // };
+    request.onerror = function(event) {
+      console.error('error');
+    };
+  };
 
   // function deleteUser(key, store) {
   //   console.log("deleteUser:", arguments);
