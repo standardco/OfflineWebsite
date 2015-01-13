@@ -88,148 +88,145 @@ $(document).on('ready', function() {
     return tx.objectStore(store_name);
   }
 
-  function clearObjectStore(store_name) {
-    var store = getObjectStore(DB_STORE_NAME, 'readwrite');
-    var request = store.clear();
-    request.onsuccess = function(event) {
-      // display some notice
-      $('#user-list').empty();
-    };
-    request.onerror = function (event) {
-      console.error("clearObjectStore:", event.target.errorCode);
-      // displayActionFailure(this.error);
-    };
-  }
+  // function clearObjectStore(store_name) {
+  //   var store = getObjectStore(DB_STORE_NAME, 'readwrite');
+  //   var request = store.clear();
+  //   request.onsuccess = function(event) {
+  //     // display some notice
+  //     $('#user-list').empty();
+  //   };
+  //   request.onerror = function (event) {
+  //     console.error("clearObjectStore:", event.target.errorCode);
+  //     // displayActionFailure(this.error);
+  //   };
+  // }
 
-  function displayUsers() {
+  function displayPosts() {
     var internet  = navigator.onLine;
 
     if (internet == true) {
-      // databaseUsers();
-      // Used during testing to avoid having to 
-      // switch internet on and off repeatedly
-      webStoredUsers();
+      databasePosts();
     } else {
-      webStoredUsers();
+      // webStoredUsers();
     }
   };
 
-  function webStoredUsers(store) {
-    console.log('displayUsers');
-    $('#user-list').empty();
+  // function webStoredUsers(store) {
+  //   console.log('displayUsers');
+  //   $('#user-list').empty();
 
-    if (typeof store == 'undefined') {
-      store = getObjectStore(DB_STORE_NAME, 'readonly');
-    }
+  //   if (typeof store == 'undefined') {
+  //     store = getObjectStore(DB_STORE_NAME, 'readonly');
+  //   }
 
-    var request = store.openCursor()
-    console.log(request);
-    request.onsuccess = function(event) {
-      console.log('test');
-      var cursor = event.target.result;
+  //   var request = store.openCursor()
+  //   console.log(request);
+  //   request.onsuccess = function(event) {
+  //     console.log('test');
+  //     var cursor = event.target.result;
 
-      if (cursor) {
-        // console.log('displayUsers cursor:', cursor);
-        var key     = cursor.key,
-            name    = cursor.value.name,
-            age     = cursor.value.age,
-            dob     = cursor.value.date_of_birth,
-            height  = cursor.value.height;
-        appendTable(key, name, age, dob, height);
-        cursor.continue();
-      } else {
-        console.log("Thats it")
-      }
-    }
-  };
+  //     if (cursor) {
+  //       // console.log('displayUsers cursor:', cursor);
+  //       var key     = cursor.key,
+  //           name    = cursor.value.name,
+  //           age     = cursor.value.age,
+  //           dob     = cursor.value.date_of_birth,
+  //           height  = cursor.value.height;
+  //       appendTable(key, name, age, dob, height);
+  //       cursor.continue();
+  //     } else {
+  //       console.log("Thats it")
+  //     }
+  //   }
+  // };
 
-  function addUser(name, age, dob, height) {
-    // console.log('addUser')
-    var obj     = { name: name, age: age, date_of_birth: dob, height: height},
-        store   = getObjectStore(DB_STORE_NAME, 'readwrite'),
-        request = store.add(obj);
+  // function addUser(name, age, dob, height) {
+  //   // console.log('addUser')
+  //   var obj     = { name: name, age: age, date_of_birth: dob, height: height},
+  //       store   = getObjectStore(DB_STORE_NAME, 'readwrite'),
+  //       request = store.add(obj);
 
-    request.onsuccess = function(event) {
-      // console.log('Insertion in DB successful');
-      var message = 'User has been successfully added to web storage!';
-          key     = event.target.result,
-          name    = obj.name,
-          age     = obj.age,
-          dob     = obj.date_of_birth,
-          height  = obj.height;
-      appendTable(key, name, age, dob, height);
-      flashNotice(message);
-    };
+  //   request.onsuccess = function(event) {
+  //     // console.log('Insertion in DB successful');
+  //     var message = 'User has been successfully added to web storage!';
+  //         key     = event.target.result,
+  //         name    = obj.name,
+  //         age     = obj.age,
+  //         dob     = obj.date_of_birth,
+  //         height  = obj.height;
+  //     appendTable(key, name, age, dob, height);
+  //     flashNotice(message);
+  //   };
 
-    request.onerror = function(event) {
-      console.error('error');
-    };
-  };
+  //   request.onerror = function(event) {
+  //     console.error('error');
+  //   };
+  // };
 
-  function deleteUser(key, store) {
-    console.log("deleteUser:", arguments);
+  // function deleteUser(key, store) {
+  //   console.log("deleteUser:", arguments);
 
-    if (typeof store == 'undefined') {
-      store = getObjectStore(DB_STORE_NAME, 'readwrite');
-    }
+  //   if (typeof store == 'undefined') {
+  //     store = getObjectStore(DB_STORE_NAME, 'readwrite');
+  //   }
 
-    // As per spec http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
-    // the result of the Object Store Deletion Operation algorithm is
-    // undefined, so it's not possible to know if some records were actually
-    // deleted by looking at the request result.
-    var request = store.get(key);
-    request.onsuccess = function(event) {
-      var record = event.target.result;
-      console.log("record:", record);
-      if (typeof record == 'undefined') {
-        console.log("No matching record found");
-        return;
-      }
-    // Warning: The exact same key used for creation needs to be passed for
-    // the deletion. If the key was a Number for creation, then it needs to
-    // be a Number for deletion.
-      request = store.delete(key);
-      request.onsuccess = function(event) {
-        var message = 'User has been successfully deleted from web storage!';
-        $('#'+key).hide();
-        flashNotice(message);
-      };
-      request.onerror = function (event) {
-        console.error("deleteUser:", event.target.errorCode);
-      };
-    };
+  //   // As per spec http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
+  //   // the result of the Object Store Deletion Operation algorithm is
+  //   // undefined, so it's not possible to know if some records were actually
+  //   // deleted by looking at the request result.
+  //   var request = store.get(key);
+  //   request.onsuccess = function(event) {
+  //     var record = event.target.result;
+  //     console.log("record:", record);
+  //     if (typeof record == 'undefined') {
+  //       console.log("No matching record found");
+  //       return;
+  //     }
+  //   // Warning: The exact same key used for creation needs to be passed for
+  //   // the deletion. If the key was a Number for creation, then it needs to
+  //   // be a Number for deletion.
+  //     request = store.delete(key);
+  //     request.onsuccess = function(event) {
+  //       var message = 'User has been successfully deleted from web storage!';
+  //       $('#'+key).hide();
+  //       flashNotice(message);
+  //     };
+  //     request.onerror = function (event) {
+  //       console.error("deleteUser:", event.target.errorCode);
+  //     };
+  //   };
 
-    request.onerror = function (event) {
-      console.error("deleteUser:", event.target.errorCode);
-      };
-  }
+  //   request.onerror = function (event) {
+  //     console.error("deleteUser:", event.target.errorCode);
+  //     };
+  // }
 
-  function syncDatabase() {
-    console.log('get users for syncing');
-    var req;
+  // function syncDatabase() {
+  //   console.log('get users for syncing');
+  //   var req;
 
-    if (typeof store == 'undefined') {
-      store = getObjectStore(DB_STORE_NAME, 'readonly');
-    }
+  //   if (typeof store == 'undefined') {
+  //     store = getObjectStore(DB_STORE_NAME, 'readonly');
+  //   }
 
-    var request = db.transaction('users').objectStore('users').openCursor()
-    request.onsuccess = function(event) {
-      var cursor = event.target.result;
+  //   var request = db.transaction('users').objectStore('users').openCursor()
+  //   request.onsuccess = function(event) {
+  //     var cursor = event.target.result;
 
-      if (cursor) {
-        console.log('displayUsers cursor:', cursor);
-        var name    = cursor.value.name,
-            age     = cursor.value.age,
-            dob     = cursor.value.date_of_birth,
-            height  = cursor.value.height;
-        normalSubmit(name, age, dob, height);
-        deleteUser(cursor.key);
-        cursor.continue();
-      } else {
-        console.log("Thats it")
-      }
-    }
-  }
+  //     if (cursor) {
+  //       console.log('displayUsers cursor:', cursor);
+  //       var name    = cursor.value.name,
+  //           age     = cursor.value.age,
+  //           dob     = cursor.value.date_of_birth,
+  //           height  = cursor.value.height;
+  //       normalSubmit(name, age, dob, height);
+  //       deleteUser(cursor.key);
+  //       cursor.continue();
+  //     } else {
+  //       console.log("Thats it")
+  //     }
+  //   }
+  // }
   
   openDb();
 
@@ -274,20 +271,20 @@ function databaseUsers() {
   });
 };
 
-function deleteDbUser(id) {
-  var datastring  = { ID: id },
-      message     = 'User has been successfully deleted from the database!';
-  $.ajax({
-      type: 'DELETE',
-      data: datastring,
-      dataType: 'json',
-      url: '/users/'+id,
-        success: function(data) {
-          $('#'+data.deleted_user.id).hide();
-          flashNotice(message);
-        }
-    });
-}
+// function deleteDbUser(id) {
+//   var datastring  = { ID: id },
+//       message     = 'User has been successfully deleted from the database!';
+//   $.ajax({
+//       type: 'DELETE',
+//       data: datastring,
+//       dataType: 'json',
+//       url: '/users/'+id,
+//         success: function(data) {
+//           $('#'+data.deleted_user.id).hide();
+//           flashNotice(message);
+//         }
+//     });
+// }
 
 function flashNotice(noticeMessage) {
   var notice       = "";
