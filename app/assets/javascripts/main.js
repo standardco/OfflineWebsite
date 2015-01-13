@@ -26,19 +26,18 @@ $(document).on('ready', function() {
   //   }
   // });
 
-  // $('.user-delete').on('click', function() {
-  //   var key       = $('#user-key').val(),
-  //       internet  = navigator.onLine;
-  //   if (internet == true) {
-  //     console.log('internet')
-  //     deleteDbUser(key);
-  //   } else {
-  //     console.log('no internet')
-  //     key = Number(key);
-  //     deleteUser(key);
-  //   }
-  //   document.getElementById('delete-user').reset();
-  // });
+  $('.post-delete').on('click', function() {
+    var key       = $('#post-key').val(),
+        internet  = navigator.onLine;
+    if (internet == true) {
+      deleteDbPost(key);
+    } else {
+      // console.log('no internet')
+      // key = Number(key);
+      // deleteUser(key);
+    }
+    document.getElementById('delete-post').reset();
+  });
 
   // $('.sync-database').on('click', function () {
   //   console.log('Sync');
@@ -270,20 +269,20 @@ function databasePosts() {
   });
 };
 
-// function deleteDbUser(id) {
-//   var datastring  = { ID: id },
-//       message     = 'User has been successfully deleted from the database!';
-//   $.ajax({
-//       type: 'DELETE',
-//       data: datastring,
-//       dataType: 'json',
-//       url: '/users/'+id,
-//         success: function(data) {
-//           $('#'+data.deleted_user.id).hide();
-//           flashNotice(message);
-//         }
-//     });
-// }
+function deleteDbPost(id) {
+  var datastring  = { ID: id },
+      notice     = 'The post has been successfully deleted from the database!';
+  $.ajax({
+      type: 'DELETE',
+      data: datastring,
+      dataType: 'json',
+      url: '/posts/'+id,
+        success: function(data) {
+          $('#'+data.deleted_post.id).hide();
+          flashNotice(notice);
+        }
+    });
+}
 
 function flashNotice(noticeMessage) {
   var notice       = "";
