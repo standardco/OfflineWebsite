@@ -4,7 +4,20 @@ Rails.application.routes.draw do
 
   get 'posts/get_list_of_posts' => 'posts#get_list_of_posts', as: :get_list_of_posts
 
-  match '/application.manifest' => Rails::Offline, via: [:get, :post]
+
+  if Rails.env.development?
+    match '/application.manifest' => Rails::Offline, via: [:get, :post]
+  end
+
+  if Rails.env.production?
+    offline = Rack::Offline.configure :cache_interval => 120 do      
+      cache ActionController::Base.helpers.asset_path("application.css")
+      cache ActionController::Base.helpers.asset_path("application.js")
+      # cache other assets
+      network "/"  
+    end
+    match "/application.manifest" => offline, via: [:get, :post]
+  end
 
   resources :posts, except: [:index, :show, :new, :edit, :update]
 
