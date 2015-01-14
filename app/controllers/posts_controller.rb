@@ -15,6 +15,7 @@ class PostsController < ApplicationController
     post.location = params[:location]
     post.message = params[:message]
     post.topic = params[:topic]
+    post.origin = params[:origin]
     post.save
     respond_to do |format|
       format.js { render :json => { :new_post => post } } 
