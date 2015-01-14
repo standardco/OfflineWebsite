@@ -16,29 +16,6 @@ $(document).on('ready', function() {
     document.getElementById('new-post').reset();
   });
 
-  // $('.user-clear').on('click', function() {
-  //   var internet  = navigator.onLine,
-  //       message   = '&#39;Clear All Users&#39; is only for offline mode.';
-  //   if (internet == true) {
-  //     flashNotice(message);
-  //   } else {
-  //     clearObjectStore();  
-  //   }
-  // });
-
-  $('.post-delete').on('click', function() {
-    var key       = $('#post-key').val(),
-        internet  = navigator.onLine;
-
-    if (internet == true) {
-      deleteDbPost(key);
-    } else {
-      key = Number(key);
-      deletePost(key);
-    }
-    document.getElementById('delete-post').reset();
-  });
-
   $('.sync-database').on('click', function () {
     var internet  = navigator.onLine,
         notice   = 'Cannot sync databases without an internet connection. Please connect to the internet and try again!';
@@ -86,19 +63,6 @@ $(document).on('ready', function() {
     return tx.objectStore(store_name);
   }
 
-  // function clearObjectStore(store_name) {
-  //   var store = getObjectStore(DB_STORE_NAME, 'readwrite');
-  //   var request = store.clear();
-  //   request.onsuccess = function(event) {
-  //     // display some notice
-  //     $('#user-list').empty();
-  //   };
-  //   request.onerror = function (event) {
-  //     console.error("clearObjectStore:", event.target.errorCode);
-  //     // displayActionFailure(this.error);
-  //   };
-  // }
-
   function displayPosts() {
     var internet  = navigator.onLine;
 
@@ -128,7 +92,7 @@ $(document).on('ready', function() {
             topic     = cursor.value.topic,
             message   = cursor.value.message;
 
-        appendTable(key, author, location, topic, message);
+        appendPost(key, author, location, topic, message);
         cursor.continue();
       } else {
         // No more data entries
@@ -149,7 +113,7 @@ $(document).on('ready', function() {
           topic     = obj.topic,
           message   = obj.message;
 
-      appendTable(key, author, location, topic, message);
+      appendPost(key, author, location, topic, message);
       flashNotice(notice);
     };
 
@@ -157,49 +121,6 @@ $(document).on('ready', function() {
       console.error('error');
     };
   };
-
-  function deletePost(key, store) {
-
-    if (typeof store == 'undefined') {
-      store = getObjectStore(DB_STORE_NAME, 'readwrite');
-    }
-
-    // As per spec http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
-    // the result of the Object Store Deletion Operation algorithm is
-    // undefined, so it's not possible to know if some records were actually
-    // deleted by looking at the request result.
-    var request = store.get(key);
-
-    request.onsuccess = function(event) {
-      var record = event.target.result;
-
-      if (typeof record == 'undefined') {
-        var notice = 'A post with the given Post ID does not seem to exist! Please try a different one.';
-
-        flashNotice(notice)
-        return;
-      }
-
-      // Warning: The exact same key used for creation needs to be passed for
-      // the deletion. If the key was a Number for creation, then it needs to
-      // be a Number for deletion.
-      request = store.delete(key);
-
-      request.onsuccess = function(event) {
-        var notice = 'The post has been successfully deleted from web storage!';
-
-        $('#'+key).hide();
-        flashNotice(notice);
-      };
-      request.onerror = function (event) {
-        console.error("deletePost:", event.target.errorCode);
-      };
-    };
-
-    request.onerror = function (event) {
-      console.error("deletePost:", event.target.errorCode);
-      };
-  }
 
   function syncDatabase() {
     var req;
@@ -248,7 +169,7 @@ function normalSubmit(author, location, topic, message) {
               topic     = data.new_post.topic,
               message   = data.new_post.message;
 
-          appendTable(id, author, location, topic, message);
+          appendPost(id, author, location, topic, message);
           flashNotice(notice);
         }
     });
@@ -267,27 +188,11 @@ function databasePosts() {
               message   = this.message,
               topic     = this.topic
 
-          appendTable(id, author, location, topic, message);
+          appendPost(id, author, location, topic, message);
         });
       }
   });
 };
-
-function deleteDbPost(id) {
-  var datastring  = { ID: id },
-      notice     = 'The post has been successfully deleted from the database!';
-      
-  $.ajax({
-      type: 'DELETE',
-      data: datastring,
-      dataType: 'json',
-      url: '/posts/'+id,
-        success: function(data) {
-          $('#'+data.deleted_post.id).hide();
-          flashNotice(notice);
-        }
-    });
-}
 
 function flashNotice(noticeMessage) {
   var notice       = "";
@@ -301,17 +206,35 @@ function flashNotice(noticeMessage) {
   // Find a wasy to count notices, then display the number in a badge
 };
 
-function appendTable(id, author, location, topic, message) {
-  var user  = "";
-      user += '<tr id="'+id+'">',
-      user += '  <td>'+id+'</td>',
-      user += '  <td>'+author+'</td>',
-      user += '  <td>'+location+'</td>',
-      user += '  <td>'+topic+'</td>',
-      user += '  <td>'+message+'</td>',
-      user += '</tr>';
-  $('#user-list').append(user);
+function appendPost(id, author, location, topic, message) {
+  var post  = "";
+      post += '<div class="panel panel-default" id="'+id+'">',
+      post += '  <div data-toggle="collapse" data-parent="#accordion" href="#collapse'+id+'" aria-expanded="true" aria-controls="collapse'+id+'" class="panel-heading" role="tab" id="heading'+id+'">',
+      post += '    <h4>'+topic+'<span class="pull-right text-opac">ID: '+id+'</span></h4>',
+      post += '  </div>',
+      post += '  <div id="collapse'+id+'" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading'+id+'">'
+      post += '    <div class="panel-body">',
+      post += '      <p>'+message+'</p>',
+      post += '      <div class="pull-right">',
+      post += '        <p class="text-opac">Author: '+author+'</br>',
+      post += '        Location: '+location+'</p>',
+      post += '      </div>',
+      post += '    </div>',
+      post += '  </div>',
+      post += '</div>',
+  $('#post-container').append(post);
 };
+
+
+        
+      
+      
+        
+        
+        
+        
+        
+      
 
 
 
