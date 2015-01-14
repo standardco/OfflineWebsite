@@ -27,44 +27,7 @@
         </form>
       </div>
     </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="title">Remove Post</h4>
-      </div>
-      <div class="panel-body">
-        <form action="" id="delete-post" class="form-stacked" remote="true">
-          <div class="form-group">
-            <label>Post ID</label><br>
-            <input type="number" class="form-control required" id="post-key" name="key">
-          </div>
-          <div class="actions">
-            <submit class="post-delete btn btn-info">Delete</submit>
-          </div>
-        </form>
-      </div>
-    </div>
   </div>
-  <div class="col-md-9">
-    <div class="panel panel-default">
-      <table class="table table-hover t-style">
-        <thead>
-          <tr class="table-head">
-            <th class="col-md-2 t-head"><h4 class="title">ID</h4></th>
-            <th class="col-md-2 t-head"><h4 class="title">Name</h4></th>
-            <th class="col-md-2 t-head"><h4 class="title">Age</h4></th>
-            <th class="col-md-2 t-head"><h4 class="title">Date of Birth</h4></th>
-            <th class="col-md-2 t-head"><h4 class="title">Height</h4></th>
-          </tr>
-        </thead>
-        <tbody id="user-list"></tbody>
-        <tfoot>
-          <td><button class="sync-database btn btn-info">Sync Databases</button></td>
-          <td><!-- <button class="user-clear btn btn-info">Clear All Users</button> --></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tfoot>
-      </table>
-    </div>
+  <div class="col-md-9" id="post-container">
   </div>
 </div>
