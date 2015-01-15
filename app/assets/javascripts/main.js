@@ -1,5 +1,5 @@
 $(document).on('ready', function() {
-
+  
   $('.post-submit').on('click', function() {
     var internet  = navigator.onLine,
         postData  = $('#new-post').serializeArray(),
@@ -66,7 +66,6 @@ $(document).on('ready', function() {
 
   function displayPosts() {
     var internet  = navigator.onLine;
-
     if (internet == true) {
       databasePosts();
       webStoredPosts();
@@ -145,7 +144,6 @@ $(document).on('ready', function() {
 
       request.onsuccess = function(event) {
         $('#'+key).hide();
-        flashNotice(notice);
       };
       request.onerror = function (event) {
         console.error("deletePost:", event.target.errorCode);
@@ -161,7 +159,6 @@ $(document).on('ready', function() {
     if (typeof store == 'undefined') {
       store = getObjectStore(DB_STORE_NAME, 'readonly');
     }
-
     var request = db.transaction('posts').objectStore('posts').openCursor()
 
     request.onsuccess = function(event) {
@@ -259,17 +256,3 @@ function appendPost(id, author, location, topic, message, origin) {
       post += '</div>',
   $('#post-container').append(post);
 };
-
-
-        
-      
-      
-        
-        
-        
-        
-        
-      
-
-
-
