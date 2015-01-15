@@ -8,13 +8,22 @@ Rails.application.routes.draw do
     offline = Rack::Offline.configure :cache_interval => 120 do      
       cache ActionController::Base.helpers.asset_path("application.css")
       cache ActionController::Base.helpers.asset_path("application.js")
-      # cache other assets
       network "/"  
     end
     match "/application.manifest" => offline, via: [:get, :post]
-
   elsif Rails.env.development?
-    match '/application.manifest' => Rails::Offline, via: [:get, :post]
+    offline = Rack::Offline.configure do
+      cache ActionController::Base.helpers.asset_path("application.css?body=1")
+      cache ActionController::Base.helpers.asset_path("application.js?body=1")
+      cache ActionController::Base.helpers.asset_path("main.js?body=1")
+      cache ActionController::Base.helpers.asset_path("bootstrap.min.js?body=1")
+      cache ActionController::Base.helpers.asset_path("turbolinks.js?body=1")
+      cache ActionController::Base.helpers.asset_path("jquery_ujs.js?body=1")
+      cache ActionController::Base.helpers.asset_path("jquery.js?body=1")
+      cache ActionController::Base.helpers.asset_path("bootstrap.min.css?body=1")
+      network "/"
+    end
+    match "/application.manifest" => offline, via: [:get, :post]
   end
 
   resources :posts, except: [:index, :show, :new, :edit, :update]
