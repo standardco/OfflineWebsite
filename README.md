@@ -11,4 +11,4 @@ With this web app you will be able to:
 
 ####Example
 
-There is also a guide to setting up web-storage that has been written along side this web app. To see how to setup web-storage using IndexedDB visit the [related blog post]()
+There is also a guide to setting up web-storage that has been written along side this web app. To see how to setup web-storage using IndexedDB visit the [related blog post](http://www.standardco.de/notes/setting-up-indexedb-for-client-side-storage)
