@@ -31,3 +31,17 @@
 .text-opac {
   opacity: 0.4;
 }
+
+.footer-text {
+  
+}
+
+.social {
+  border-top: 1px solid #ddd;
+  color: #333;
+  opacity: 0.5;
+  text-align: center;
+  margin-top: 8px;
+  background-color: #f5f5f5;
+  height: 80px;
+}
