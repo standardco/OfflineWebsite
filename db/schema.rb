@@ -26,13 +26,4 @@ ActiveRecord::Schema.define(version: 20150114194415) do
     t.text     "message"
   end
 
-  create_table "users", force: true do |t|
-    t.string   "name"
-    t.integer  "age"
-    t.datetime "date_of_birth"
-    t.float    "height"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
 end
